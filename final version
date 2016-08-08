@@ -1,1 +1,39 @@
+## makeCacheMatrix is a function that creates four other functions
+## to set and get global values for a matrix [mtx] and, also, to
+## set and get global values for its inverse [inv_mtx].
+## It uses a flag vector to help check if the inverse matrix was already calculated.
+## When set_mtx is used, flag turns to NULL and the inverse matrix
+## will be calculated when calling cacheSolve() function.
+
+makeCacheMatrix <- function(x = matrix()) {
+  flag <<- NULL
+  inv_mtx <<- matrix(data=NA,1,1)
+  set_mtx <- function (y = matrix()){
+    mtx <<- y
+    flag <<- NULL
+  }
+  get_mtx <- function() mtx
+  set_invmtx <- function(invmtx) {inv_mtx <<- invmtx
+  flag <<- 1}
+  get_invmtx <- function() inv_mtx
+  list(set_mtx = set_mtx, get_mtx = get_mtx , 
+       set_invmtx = set_invmtx , 
+       get_invmtx = get_invmtx)
+}
+
+## Return a matrix that is the inverse of 'x'
+## If the inverse of matrix "x" was already calculated, then it is available in
+## inv_mtx (cached).  Otherwise, cacheSolve() calculates "x" matrix inverses.
+
+cacheSolve <- function(x) {
+  inv_mtx <- x$get_invmtx()
+  if(!is.null(flag)){
+    print("got from cache!")
+    return(inv_mtx)
+  }
+  data <- x$get_mtx()
+  inv_mtx <- solve(data)
+  x$set_invmtx(inv_mtx)
+  inv_mtx
+}
 
